@@ -35,55 +35,64 @@ use Switch;
 
 our $VERSION="0.0.99";
 
-sub HELP_MESSAGE
+sub show_usage
 {
-     print <<EOF;
+     print STDERR <<EOF;
 Usage: $0 [options]
  -u <user>      the github user
  -r <repo>      the github repo
  -T             list tags
  -B             list branches
+ -t <tag>       head to use if -c or -g is given.
+ -b <branch>    branch to use if -c or -g is given.
  -c             checkout given branch, tag or HEAD if none is given.
- -u             generate url to an archive for the given tag, branch or HEAD.
- -t <tag>       head to use if -c or -u is given.
- -b <branch>    branch to use if -c or -u is given.
+ -g             generate url to an archive for the given tag, branch or HEAD.
 EOF
 
 exit 1;
 }
 
-sub VERSION_MESSAGE
+sub show_version
 {
-     print <<EOF;
+     print STDERR <<EOF;
 ght-Version $VERSION
 EOF
 exit 1;
 }
 
-# main()
-my ($repo, $user, $tag, $branch, $lbranch, $ltag, $geturl, $checkout);
-my %opts;
+# print message and return
+sub bailout
+{
+     print STDERR $_[0];
+     exit 1;
+}
 
-getopt('hu:r:TBvcut:b:', \%opts);
+# main()
+my ($repo, $user, $tag, $branch, $lbranch, $ltag, $gurl, $co, %opts);
+
+# tell getopt to exit silently on --help or --version
+$Getopt::Std::STANDARD_HELP_VERSION = 23;
+$Getopt::Std::OUTPUT_HELP_VERSION = 42;
+
+getopts('hu:r:TBvcgt:b:', \%opts) || exit 1;
 for ( keys %opts ) {
      switch () {
-          case 'h' { HELP_MESSAGE }
-          case 'v' { VERSION_MESSAGE }
-          case 'u' { $user = $opts{$_} }
-          case 'r' { $repo = $opts{$_} }
-          case 't' { $tag = $opts{$_} }
-          case 'b' { $branch = $opts{$_} }
-          case 'B' { $lbranch = 1}
-          case 'T' { $ltag = 1 }
-          case 'u' { $geturl = 1 }
-          case 'c' { $checkout = 1 }
+          case 'h' { show_usage; }
+          case 'v' { show_version; }
+          case 'u' { $user = $opts{$_}; }
+          case 'r' { $repo = $opts{$_}; }
+          case 't' { $tag = $opts{$_}; }
+          case 'b' { $branch = $opts{$_}; }
+          case 'B' { $lbranch = 1; }
+          case 'T' { $ltag = 1; }
+          case 'g' { $gurl = 1; }
+          case 'c' { $co = 1; }
      }
 }
 
-# check if user and repo is set.
-if (! ($repo && $user) ) {
-     print "you must set reponame and username!\n";
-     HELP_MESSAGE;
-}
+# weed out illegal arg-combinations
+bailout("you must set reponame and username!\n") if (!($repo && $user));
+bailout("you can't set -g and -c at the same time!\n") if($gurl && $co);
+bailout("you can't set -t and -b at the same time!\n") if ($tag && $branch);
 
 exit 0;
