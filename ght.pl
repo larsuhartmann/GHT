@@ -85,6 +85,12 @@ sub list_tags
      print_hashref((shift)->tags);
 }
 
+# list branches of repository
+sub list_branches
+{
+     print_hashref((shift)->branches);
+}
+
 # main()
 my ($repo, $user, $tag, $branch, $lbranch, $ltag, $gurl, $co, %opts, $github);
 
@@ -118,4 +124,5 @@ bailout("you can't set -t and -b at the same time!\n") if ($tag && $branch);
 $github = Net::GitHub::V2::Repositories->new( owner => $user, repo => $repo );
 
 list_tags($github) if ($ltag);
+list_branches($github) if ($lbranch);
 exit 0;
