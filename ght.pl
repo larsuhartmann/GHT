@@ -95,7 +95,9 @@ for ( keys %opts ) {
 
 # weed out illegal arg-combinations
 bailout("you must set reponame and username!\n") if (!($repo && $user));
-bailout("you can't set -g and -c at the same time!\n") if($gurl && $co);
+if(! $gurl xor $co xor $ltag xor $lbranch ) {
+     bailout("you can only set one of -g, -c, -T or -B at the same time!\n");
+}
 bailout("you can't set -t and -b at the same time!\n") if ($tag && $branch);
 
 exit 0;
