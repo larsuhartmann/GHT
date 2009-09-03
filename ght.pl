@@ -33,6 +33,9 @@ use warnings;
 use Getopt::Std;
 use Switch;
 
+use Net::GitHub::V2::Repositories;
+use Git::Class::Cmd;
+
 our $VERSION="0.0.99";
 
 sub show_usage
