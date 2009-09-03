@@ -70,8 +70,18 @@ sub bailout
      exit 1;
 }
 
+# list tags of repository
+sub list_tags
+{
+     my $repo = shift;
+     my $tags = $repo->tags;
+     for (keys %$tags) {
+          print "$_ => $tags->{$_}\n";
+     }
+}
+
 # main()
-my ($repo, $user, $tag, $branch, $lbranch, $ltag, $gurl, $co, %opts);
+my ($repo, $user, $tag, $branch, $lbranch, $ltag, $gurl, $co, %opts, $github);
 
 # tell getopt to exit silently on --help or --version
 $Getopt::Std::STANDARD_HELP_VERSION = 23;
@@ -100,4 +110,7 @@ if(! $gurl xor $co xor $ltag xor $lbranch ) {
 }
 bailout("you can't set -t and -b at the same time!\n") if ($tag && $branch);
 
+$github = Net::GitHub::V2::Repositories->new( owner => $user, repo => $repo );
+
+list_tags($github) if ($ltag);
 exit 0;
