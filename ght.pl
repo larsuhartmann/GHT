@@ -70,14 +70,19 @@ sub bailout
      exit 1;
 }
 
+# print out hash_references
+sub print_hashref
+{
+     my $hashref = shift;
+     for (keys %$hashref) {
+          print "$_ => $hashref->{$_}\n";
+     }
+}
+
 # list tags of repository
 sub list_tags
 {
-     my $repo = shift;
-     my $tags = $repo->tags;
-     for (keys %$tags) {
-          print "$_ => $tags->{$_}\n";
-     }
+     print_hashref((shift)->tags);
 }
 
 # main()
