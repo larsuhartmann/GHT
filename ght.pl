@@ -31,7 +31,7 @@ use strict;
 use warnings;
 
 use Getopt::Std;
-use Switch;
+use feature qw(switch);
 
 use Net::GitHub::V2::Repositories;
 use Git::Class::Cmd;
@@ -100,17 +100,17 @@ $Getopt::Std::OUTPUT_HELP_VERSION = 42;
 
 getopts('hu:r:TBvcgt:b:', \%opts) || exit 1;
 for ( keys %opts ) {
-     switch () {
-          case 'h' { show_usage; }
-          case 'v' { show_version; }
-          case 'u' { $user = $opts{$_}; }
-          case 'r' { $repo = $opts{$_}; }
-          case 't' { $tag = $opts{$_}; }
-          case 'b' { $branch = $opts{$_}; }
-          case 'B' { $lbranch = 1; }
-          case 'T' { $ltag = 1; }
-          case 'g' { $gurl = 1; }
-          case 'c' { $co = 1; }
+     given ($_) {
+          when ("h") { show_usage; }
+          when ("v") { show_version; }
+          when ("u") { $user = $opts{$_}; }
+          when ("r") { $repo = $opts{$_}; }
+          when ("t") { $tag = $opts{$_}; }
+          when ("b") { $branch = $opts{$_}; }
+          when ("B") { $lbranch = 1; }
+          when ("T") { $ltag = 1; }
+          when ("g") { $gurl = 1; }
+          when ("c") { $co = 1; }
      }
 }
 
