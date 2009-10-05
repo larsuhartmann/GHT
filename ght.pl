@@ -31,7 +31,8 @@ use strict;
 use warnings;
 
 use Getopt::Std;
-use feature qw(switch);
+use if ( $] < 5.10 ), qw(Switch Perl6);
+use if ( $] >= 5.10 ), qw(feature switch);
 
 use Net::GitHub::V2::Repositories;
 use Git::Class::Cmd;
